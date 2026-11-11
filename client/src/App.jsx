@@ -45,7 +45,7 @@ export default function App() {
   }, [logoUrl]);
 
   return (
-    <div className="flex flex-col min-h-screen bg-zinc-950 text-zinc-100 selection:bg-purple-500/30 selection:text-purple-200">
+    <div className="flex flex-col min-h-screen bg-[#F3ECE3] text-[#2F1D15] selection:bg-[#D4AF37]/30 selection:text-[#23170F]">
       <Header />
       <main className="flex-grow">
         <Routes>
@@ -59,6 +59,8 @@ export default function App() {
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/order/:id" element={<OrderDetails />} />
           <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/adminpanel" element={<AdminDashboard />} />
+          <Route path="/admin-panel" element={<AdminDashboard />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/track-order" element={<TrackOrder />} />
         </Routes>

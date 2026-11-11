@@ -58,53 +58,33 @@ export default function ProductDetail() {
   if (loading || !product) {
     return (
       <div className="flex justify-center items-center h-[50vh]">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-amber-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#D4AF37]"></div>
       </div>
     );
   }
 
   const handleAddToCart = () => {
-    if (!user) {
-      toast.error('Please login to add to cart');
-      navigate('/login');
-      return;
-    }
     dispatch(
       addToCart({
-        productId: product._id,
+        product,
         quantity,
-        size: selectedSize,
-        color: selectedColor,
+        size: selectedSize || product.sizes?.[0] || 'Standard',
+        color: selectedColor || product.colors?.[0] || 'Default',
       })
-    ).then((res) => {
-      if (res.meta.requestStatus === 'fulfilled') {
-        toast.success('Added to shopping cart!');
-      } else {
-        toast.error(res.payload || 'Failed to add item');
-      }
-    });
+    );
+    toast.success('Added to shopping cart!');
   };
 
   const handleBuyNow = () => {
-    if (!user) {
-      toast.error('Please login to checkout');
-      navigate('/login');
-      return;
-    }
     dispatch(
       addToCart({
-        productId: product._id,
+        product,
         quantity,
-        size: selectedSize,
-        color: selectedColor,
+        size: selectedSize || product.sizes?.[0] || 'Standard',
+        color: selectedColor || product.colors?.[0] || 'Default',
       })
-    ).then((res) => {
-      if (res.meta.requestStatus === 'fulfilled') {
-        navigate('/checkout');
-      } else {
-        toast.error(res.payload || 'Failed to process checkout');
-      }
-    });
+    );
+    navigate('/checkout');
   };
 
   const handleWhatsAppOrder = () => {
@@ -152,13 +132,16 @@ export default function ProductDetail() {
   };
 
   const currentImageUrl = product.images?.[selectedImage]?.url || 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=500&auto=format&fit=crop&q=60';
+  const discountPercent = product.discountPrice > 0 && product.price > product.discountPrice
+    ? Math.round(((product.price - product.discountPrice) / product.price) * 100)
+    : 0;
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
         {/* Left Column: Images */}
         <div className="flex flex-col gap-4">
-          <div className="aspect-[3/4] overflow-hidden bg-zinc-950 border border-zinc-800 rounded-lg">
+          <div className="aspect-[3/4] overflow-hidden bg-[#F5EDE3] border border-[#E5D9CB] rounded-2xl shadow-sm">
             <img src={currentImageUrl} alt={product.name} className="w-full h-full object-cover" />
           </div>
           {product.images?.length > 1 && (
@@ -180,8 +163,8 @@ export default function ProductDetail() {
                       }
                     }
                   }}
-                  className={`aspect-square overflow-hidden bg-zinc-950 border rounded-lg cursor-pointer transition-all ${
-                    selectedImage === index ? 'border-amber-500 scale-95' : 'border-zinc-800'
+                  className={`aspect-square overflow-hidden bg-[#F5EDE3] border rounded-xl cursor-pointer transition-all ${
+                    selectedImage === index ? 'border-[#D4AF37] ring-2 ring-[#D4AF37]/50 scale-95' : 'border-[#E5D9CB]'
                   }`}
                 >
                   <img src={img.url} alt="" className="w-full h-full object-cover" />
@@ -194,48 +177,50 @@ export default function ProductDetail() {
         {/* Right Column: Info */}
         <div className="flex flex-col gap-6">
           <div>
-            <span className="text-xs uppercase font-bold tracking-widest text-zinc-500">{product.brand}</span>
-            <h1 className="text-3xl font-extrabold text-white mt-1">{product.name}</h1>
+            <span className="text-xs uppercase font-bold tracking-widest text-[#B88E28]">{product.brand || 'Bro Fusion'}</span>
+            {/* Rule 4: Product names: Dark Brown */}
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-[#2F1D15] mt-1 font-['Syne']">{product.name}</h1>
 
             <div className="flex items-center gap-2 mt-2">
-              <div className="flex items-center gap-1 text-amber-500">
+              <div className="flex items-center gap-1 text-[#D4AF37]">
                 <FaStar />
-                <span className="text-sm font-semibold">{product.rating ? product.rating.toFixed(1) : 'New'}</span>
+                <span className="text-sm font-semibold text-[#2F1D15]">{product.rating ? product.rating.toFixed(1) : '5.0'}</span>
               </div>
-              <span className="text-sm text-zinc-500">({product.numReviews} reviews)</span>
+              <span className="text-sm text-[#7A6451]">({product.numReviews || 0} reviews)</span>
             </div>
           </div>
 
-          {/* Price */}
-          <div className="flex items-baseline gap-3 border-y border-zinc-800 py-4">
+          {/* Rule 5: Prices: Dark Brown */}
+          <div className="flex items-baseline gap-3 border-y border-[#E5D9CB] py-4">
             {product.discountPrice > 0 ? (
               <>
-                <span className="text-3xl font-extrabold text-amber-400">₹{product.discountPrice}</span>
-                <span className="text-lg text-zinc-500 line-through">₹{product.price}</span>
-                <span className="text-xs bg-emerald-500/10 text-emerald-500 font-bold px-2 py-1 rounded">
-                  -{product.discountPercent}% OFF
+                <span className="text-3xl font-extrabold text-[#2F1D15]">₹{product.discountPrice}</span>
+                <span className="text-lg text-[#8C7765] line-through font-semibold">₹{product.price}</span>
+                {/* Rule 6: Sale badges: Muted Gold */}
+                <span className="text-xs bg-[#C6A15B] text-[#23170F] border border-[#B38E46] font-extrabold px-2.5 py-1 rounded-full shadow-sm tracking-wider">
+                  -{discountPercent}% OFF
                 </span>
               </>
             ) : (
-              <span className="text-3xl font-extrabold text-white">₹{product.price}</span>
+              <span className="text-3xl font-extrabold text-[#2F1D15]">₹{product.price}</span>
             )}
           </div>
 
-          <p className="text-zinc-400 text-sm leading-relaxed">{product.description}</p>
+          <p className="text-[#554435] text-sm leading-relaxed">{product.description}</p>
 
           {/* Sizes */}
           {product.sizes?.length > 0 && (
             <div>
-              <span className="text-sm font-semibold text-zinc-300 block mb-2">Select Size</span>
-              <div className="flex gap-2">
+              <span className="text-sm font-semibold text-[#2F1D15] block mb-2">Select Size</span>
+              <div className="flex flex-wrap gap-2">
                 {product.sizes.map((size) => (
                   <button
                     key={size}
                     onClick={() => setSelectedSize(size)}
-                    className={`min-w-[40px] h-10 px-2 flex items-center justify-center rounded border text-sm font-medium transition-all cursor-pointer ${
+                    className={`min-w-[44px] h-11 px-3 flex items-center justify-center rounded-xl border text-sm font-bold transition-all cursor-pointer ${
                       selectedSize === size
-                        ? 'bg-amber-500 border-amber-500 text-black font-bold'
-                        : 'bg-zinc-900 border-zinc-800 text-zinc-300 hover:border-zinc-700'
+                        ? 'bg-[#23170F] border-[#23170F] text-[#E8C86A] shadow'
+                        : 'bg-[#FDFBF7] border-[#E5D9CB] text-[#2F1D15] hover:border-[#D4AF37]'
                     }`}
                   >
                     {size}
@@ -248,8 +233,8 @@ export default function ProductDetail() {
           {/* Colors */}
           {product.colors?.length > 0 && (
             <div>
-              <span className="text-sm font-semibold text-zinc-300 block mb-2">Select Color</span>
-              <div className="flex gap-2">
+              <span className="text-sm font-semibold text-[#2F1D15] block mb-2">Select Color</span>
+              <div className="flex flex-wrap gap-2">
                 {product.colors.map((color, index) => (
                   <button
                     key={color}
@@ -267,10 +252,10 @@ export default function ProductDetail() {
                         }
                       }
                     }}
-                    className={`h-10 px-4 rounded border text-sm font-medium transition-all cursor-pointer ${
+                    className={`h-11 px-4 rounded-xl border text-sm font-bold transition-all cursor-pointer ${
                       selectedColor === color
-                        ? 'bg-amber-500 border-amber-500 text-black font-bold'
-                        : 'bg-zinc-900 border-zinc-800 text-zinc-300 hover:border-zinc-700'
+                        ? 'bg-[#23170F] border-[#23170F] text-[#E8C86A] shadow'
+                        : 'bg-[#FDFBF7] border-[#E5D9CB] text-[#2F1D15] hover:border-[#D4AF37]'
                     }`}
                   >
                     {color}
@@ -281,19 +266,19 @@ export default function ProductDetail() {
           )}
 
           {/* Quantity and Actions */}
-          <div className="flex flex-col gap-4 mt-4">
-            <div className="flex items-center gap-4">
-              <div className="flex items-center bg-zinc-900 border border-zinc-800 rounded-lg">
+          <div className="flex flex-col gap-4 mt-2">
+            <div className="flex items-center gap-3">
+              <div className="flex items-center bg-[#FDFBF7] border border-[#E5D9CB] rounded-xl shadow-sm">
                 <button
                   onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                  className="w-10 h-10 flex items-center justify-center text-zinc-400 hover:text-white cursor-pointer"
+                  className="w-10 h-11 flex items-center justify-center text-[#2F1D15] hover:text-[#D4AF37] cursor-pointer font-bold"
                 >
                   -
                 </button>
-                <span className="w-8 text-center font-bold text-white text-sm">{quantity}</span>
+                <span className="w-8 text-center font-bold text-[#2F1D15] text-sm">{quantity}</span>
                 <button
                   onClick={() => setQuantity((q) => q + 1)}
-                  className="w-10 h-10 flex items-center justify-center text-zinc-400 hover:text-white cursor-pointer"
+                  className="w-10 h-11 flex items-center justify-center text-[#2F1D15] hover:text-[#D4AF37] cursor-pointer font-bold"
                 >
                   +
                 </button>
@@ -301,29 +286,30 @@ export default function ProductDetail() {
 
               <button
                 onClick={handleAddToCart}
-                className="flex-1 bg-[#161924] hover:bg-[#202434] text-white border border-[#202434] hover:border-amber-400/50 font-bold py-3.5 px-6 rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg cursor-pointer"
+                className="flex-1 bg-[#23170F] hover:bg-[#352317] text-[#E8DDD1] border border-[#23170F] font-bold py-3.5 px-6 rounded-xl transition-all flex items-center justify-center gap-2 shadow cursor-pointer"
               >
-                <FaShoppingCart className="text-amber-400" /> Add to Cart
+                <FaShoppingCart className="text-[#E8C86A]" /> Add to Cart
               </button>
 
               <button
                 onClick={handleWishlist}
-                className="p-3.5 rounded-xl border border-[#202434] bg-[#10121A] hover:border-zinc-700 hover:bg-[#161924] text-zinc-300 hover:text-rose-500 cursor-pointer"
+                className="p-3.5 rounded-xl border border-[#E5D9CB] bg-[#FDFBF7] hover:border-rose-400 text-[#2F1D15] hover:text-rose-500 cursor-pointer shadow-sm"
               >
                 {isWishlisted ? <FaHeart className="text-rose-500" /> : <FaRegHeart />}
               </button>
             </div>
 
+            {/* Rule 7: Buttons: Gold with dark text */}
             <button
               onClick={handleBuyNow}
-              className="gold-gradient-btn w-full py-4 px-6 rounded-xl flex items-center justify-center gap-2 shadow-xl cursor-pointer border-0 select-none text-sm uppercase tracking-wider"
+              className="gold-gradient-btn w-full py-4 px-6 rounded-xl flex items-center justify-center gap-2 shadow-md cursor-pointer border-0 select-none text-sm uppercase tracking-wider"
             >
               ⚡ Instant Checkout
             </button>
 
             <button
               onClick={handleWhatsAppOrder}
-              className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold py-4 px-6 rounded-xl transition-all flex items-center justify-center gap-2 shadow-xl cursor-pointer border-0 select-none text-sm uppercase tracking-wider"
+              className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-4 px-6 rounded-xl transition-all flex items-center justify-center gap-2 shadow-md cursor-pointer border-0 select-none text-sm uppercase tracking-wider"
             >
               <FaWhatsapp className="text-xl" /> Order Directly on WhatsApp
             </button>
@@ -331,22 +317,22 @@ export default function ProductDetail() {
         </div>
       </div>
 
-      {/* Reviews Section */}
-      <div className="mt-16 border-t border-zinc-800 pt-12">
-        <h2 className="text-2xl font-bold text-white mb-8">Customer Reviews</h2>
+      {/* Reviews Section in Ivory / Cream */}
+      <div className="mt-16 border-t border-[#E5D9CB] pt-12">
+        <h2 className="text-2xl font-bold text-[#2F1D15] mb-8 font-['Syne']">Customer Reviews</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
           {/* Write a Review */}
           <div>
-            <h3 className="text-lg font-semibold text-zinc-200 mb-4">Write a Review</h3>
+            <h3 className="text-lg font-semibold text-[#2F1D15] mb-4">Write a Review</h3>
             {user ? (
               <form onSubmit={handleReviewSubmit} className="flex flex-col gap-4">
                 <div>
-                  <label className="text-xs text-zinc-400 block mb-1">Rating</label>
+                  <label className="text-xs text-[#7A6451] block mb-1">Rating</label>
                   <select
                     value={rating}
                     onChange={(e) => setRating(Number(e.target.value))}
-                    className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-2 text-zinc-200 focus:outline-none focus:border-zinc-700 cursor-pointer"
+                    className="w-full bg-[#FDFBF7] border border-[#E5D9CB] rounded-xl px-4 py-2.5 text-[#2F1D15] focus:outline-none focus:border-[#D4AF37] cursor-pointer shadow-sm"
                   >
                     <option value="5">5 Stars — Excellent</option>
                     <option value="4">4 Stars — Good</option>
@@ -356,45 +342,45 @@ export default function ProductDetail() {
                   </select>
                 </div>
                 <div>
-                  <label className="text-xs text-zinc-400 block mb-1">Comment</label>
+                  <label className="text-xs text-[#7A6451] block mb-1">Comment</label>
                   <textarea
                     rows="4"
                     required
                     value={comment}
                     onChange={(e) => setComment(e.target.value)}
                     placeholder="Share your thoughts about this product..."
-                    className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-2 text-sm text-zinc-200 focus:outline-none focus:border-zinc-700 resize-none"
+                    className="w-full bg-[#FDFBF7] border border-[#E5D9CB] rounded-xl px-4 py-2.5 text-sm text-[#2F1D15] focus:outline-none focus:border-[#D4AF37] resize-none shadow-sm"
                   ></textarea>
                 </div>
                 <button
                   type="submit"
-                  className="bg-amber-500 hover:bg-amber-600 text-black font-bold py-2 rounded-lg text-sm transition-colors cursor-pointer"
+                  className="gold-gradient-btn py-2.5 px-5 rounded-xl text-sm cursor-pointer shadow"
                 >
                   Submit Review
                 </button>
               </form>
             ) : (
-              <p className="text-zinc-500 text-sm">Please login to write a review.</p>
+              <p className="text-[#7A6451] text-sm">Please login to write a review.</p>
             )}
           </div>
 
-          {/* Review List */}
+          {/* Review List in Ivory / Cream cards */}
           <div className="md:col-span-2 flex flex-col gap-6">
             {product.reviews?.length === 0 ? (
-              <p className="text-zinc-500">No reviews yet. Be the first to review this product!</p>
+              <p className="text-[#7A6451]">No reviews yet. Be the first to review this product!</p>
             ) : (
               product.reviews.map((rev) => (
-                <div key={rev._id} className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-6 flex flex-col gap-2">
+                <div key={rev._id} className="bg-[#FDFBF7] border border-[#E5D9CB] rounded-2xl p-6 flex flex-col gap-2 shadow-sm">
                   <div className="flex justify-between items-center">
-                    <span className="font-semibold text-zinc-200">{rev.name}</span>
-                    <span className="text-xs text-zinc-500">{new Date(rev.createdAt).toLocaleDateString()}</span>
+                    <span className="font-semibold text-[#2F1D15]">{rev.name}</span>
+                    <span className="text-xs text-[#7A6451]">{new Date(rev.createdAt).toLocaleDateString()}</span>
                   </div>
-                  <div className="flex items-center gap-1 text-amber-500 text-xs">
+                  <div className="flex items-center gap-1 text-[#D4AF37] text-xs">
                     {[...Array(rev.rating)].map((_, i) => (
                       <FaStar key={i} />
                     ))}
                   </div>
-                  <p className="text-sm text-zinc-400 leading-relaxed">{rev.comment}</p>
+                  <p className="text-sm text-[#554435] leading-relaxed">{rev.comment}</p>
                 </div>
               ))
             )}

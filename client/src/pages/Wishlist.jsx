@@ -18,8 +18,8 @@ export default function Wishlist() {
   if (!user) {
     return (
       <div className="max-w-md mx-auto my-24 px-4 text-center">
-        <h2 className="text-2xl font-bold text-white mb-4">Please log in to view your wishlist</h2>
-        <Link to="/login" className="bg-amber-500 hover:bg-amber-600 text-black font-bold py-2.5 px-6 rounded-full inline-block">
+        <h2 className="text-2xl font-bold text-[#2F1D15] mb-4 font-['Syne']">Please log in to view your wishlist</h2>
+        <Link to="/login" className="gold-gradient-btn py-2.5 px-6 rounded-full inline-block text-xs uppercase tracking-wider shadow">
           Login
         </Link>
       </div>
@@ -28,18 +28,18 @@ export default function Wishlist() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <h1 className="text-3xl font-extrabold text-white mb-8">My Wishlist</h1>
+      <h1 className="text-3xl font-extrabold text-[#2F1D15] mb-8 font-['Syne']">My Wishlist</h1>
 
       {loading ? (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {[1, 2, 3, 4].map((n) => (
-            <div key={n} className="animate-pulse bg-zinc-900 aspect-[3/4] rounded-lg border border-zinc-800 animate-duration-1000"></div>
+            <div key={n} className="animate-pulse bg-[#FDFBF7] aspect-[3/4] rounded-2xl border border-[#E5D9CB]"></div>
           ))}
         </div>
       ) : wishlistItems?.length === 0 ? (
-        <div className="text-center py-24 bg-zinc-900/30 border border-zinc-800 rounded-lg">
-          <p className="text-zinc-500 mb-6">Your wishlist is empty.</p>
-          <Link to="/products" className="bg-gradient-to-r from-amber-500 to-purple-600 hover:from-amber-600 hover:to-purple-700 text-white font-semibold py-2.5 px-6 rounded-full inline-block">
+        <div className="text-center py-24 bg-[#FDFBF7] border border-[#E5D9CB] rounded-2xl shadow-sm">
+          <p className="text-[#7A6451] mb-6 font-medium">Your wishlist is empty.</p>
+          <Link to="/products" className="gold-gradient-btn py-3 px-8 rounded-full inline-block uppercase tracking-wider text-xs shadow-md">
             Explore Collection
           </Link>
         </div>

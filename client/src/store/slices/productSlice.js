@@ -7,6 +7,24 @@ import {
   supabaseGetCategories,
 } from '../../services/supabase';
 
+const DEFAULT_CATEGORIES = [
+  { _id: 'cat-1', name: 'T-Shirt', slug: 't-shirt' },
+  { _id: 'cat-2', name: 'Shirt', slug: 'shirt' },
+  { _id: 'cat-3', name: 'Pant', slug: 'pant' },
+  { _id: 'cat-4', name: 'Track', slug: 'track' },
+  { _id: 'cat-5', name: 'Hoodie', slug: 'hoodie' },
+];
+
+const getLocalStoredProducts = () => {
+  try {
+    const raw = localStorage.getItem('bro_products');
+    if (raw) return JSON.parse(raw);
+  } catch (e) {
+    console.warn(e);
+  }
+  return [];
+};
+
 export const fetchProducts = createAsyncThunk('products/fetchAll', async (queryParams = {}, thunkAPI) => {
   try {
     if (isSupabaseConfigured()) {
@@ -16,12 +34,11 @@ export const fetchProducts = createAsyncThunk('products/fetchAll', async (queryP
     const response = await api.get('/products', { params: queryParams });
     return response.data;
   } catch (error) {
-    try {
-      const response = await api.get('/products', { params: queryParams });
-      return response.data;
-    } catch {
-      return thunkAPI.rejectWithValue(error.message || 'Failed to fetch products');
+    const local = getLocalStoredProducts();
+    if (local.length > 0) {
+      return { success: true, products: local, total: local.length };
     }
+    return { success: true, products: [], total: 0 };
   }
 });
 
@@ -35,12 +52,9 @@ export const fetchFeaturedProducts = createAsyncThunk('products/fetchFeatured', 
     const response = await api.get('/products/featured');
     return response.data;
   } catch (error) {
-    try {
-      const response = await api.get('/products/featured');
-      return response.data;
-    } catch {
-      return thunkAPI.rejectWithValue(error.message || 'Failed to fetch featured products');
-    }
+    const local = getLocalStoredProducts();
+    const featured = local.filter((p) => p.isFeatured);
+    return { success: true, products: featured.length ? featured : local.slice(0, 8) };
   }
 });
 
@@ -54,12 +68,9 @@ export const fetchNewArrivals = createAsyncThunk('products/fetchNewArrivals', as
     const response = await api.get('/products/new-arrivals');
     return response.data;
   } catch (error) {
-    try {
-      const response = await api.get('/products/new-arrivals');
-      return response.data;
-    } catch {
-      return thunkAPI.rejectWithValue(error.message || 'Failed to fetch new arrivals');
-    }
+    const local = getLocalStoredProducts();
+    const arrivals = local.filter((p) => p.isNewArrival);
+    return { success: true, products: arrivals.length ? arrivals : local.slice(0, 8) };
   }
 });
 
@@ -73,12 +84,9 @@ export const fetchBestSellers = createAsyncThunk('products/fetchBestSellers', as
     const response = await api.get('/products/best-sellers');
     return response.data;
   } catch (error) {
-    try {
-      const response = await api.get('/products/best-sellers');
-      return response.data;
-    } catch {
-      return thunkAPI.rejectWithValue(error.message || 'Failed to fetch best sellers');
-    }
+    const local = getLocalStoredProducts();
+    const best = local.filter((p) => p.isBestSeller);
+    return { success: true, products: best.length ? best : local.slice(0, 8) };
   }
 });
 
@@ -91,12 +99,10 @@ export const fetchProductBySlug = createAsyncThunk('products/fetchSingle', async
     const response = await api.get(`/products/${slug}`);
     return response.data;
   } catch (error) {
-    try {
-      const response = await api.get(`/products/${slug}`);
-      return response.data;
-    } catch {
-      return thunkAPI.rejectWithValue(error.message || 'Failed to fetch product details');
-    }
+    const local = getLocalStoredProducts();
+    const found = local.find((p) => p.slug === slug || p._id === slug);
+    if (found) return { success: true, product: found };
+    return thunkAPI.rejectWithValue('Product not found');
   }
 });
 
@@ -110,11 +116,15 @@ export const fetchCategories = createAsyncThunk('products/fetchCategories', asyn
     return response.data;
   } catch (error) {
     try {
-      const response = await api.get('/categories');
-      return response.data;
-    } catch {
-      return thunkAPI.rejectWithValue(error.message || 'Failed to fetch categories');
+      const stored = localStorage.getItem('bro_categories');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (parsed?.length > 0) return { success: true, categories: parsed };
+      }
+    } catch (e) {
+      console.warn(e);
     }
+    return { success: true, categories: DEFAULT_CATEGORIES };
   }
 });
 
@@ -179,7 +189,7 @@ const productSlice = createSlice({
       })
       // fetch categories
       .addCase(fetchCategories.fulfilled, (state, action) => {
-        state.categories = action.payload.categories || [];
+        state.categories = action.payload.categories || DEFAULT_CATEGORIES;
       });
   },
 });

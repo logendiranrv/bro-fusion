@@ -39,74 +39,74 @@ export default function Register() {
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
-      <div className="max-w-md w-full bg-[#10121A] border border-[#202434] rounded-2xl p-8 shadow-2xl flex flex-col gap-6">
+      <div className="max-w-md w-full bg-white border border-[#D8C7B5] rounded-3xl p-8 shadow-sm flex flex-col gap-6">
         <div className="text-center">
-          <span className="text-xs font-bold uppercase tracking-widest text-amber-400">Join Bro Fusion</span>
-          <h2 className="text-3xl font-extrabold text-white mt-1 font-['Syne']">Create Account</h2>
-          <p className="text-xs text-zinc-400 mt-2">Sign up for luxury streetwear drops and instant tracking</p>
+          <span className="text-xs font-bold uppercase tracking-widest text-[#8A6237]">Join Bro Fusion</span>
+          <h2 className="text-3xl font-extrabold text-[#1E1712] mt-1 font-['Syne']">Create Account</h2>
+          <p className="text-xs text-[#77624F] mt-2">Sign up for luxury streetwear drops and instant tracking</p>
         </div>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div>
-            <label className="text-xs font-bold uppercase tracking-wider text-zinc-400 block mb-1.5">Full Name</label>
+            <label className="text-xs font-bold uppercase tracking-wider text-[#77624F] block mb-1.5">Full Name</label>
             <input
               type="text"
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Logendiran"
-              className="w-full bg-[#08090D] border border-[#202434] rounded-xl px-4 py-3 text-sm text-zinc-200 focus:outline-none focus:border-amber-400"
+              className="w-full bg-[#F5EDE3]/40 border border-[#D8C7B5] rounded-xl px-4 py-3 text-sm text-[#1E1712] focus:outline-none focus:border-[#C69D71] focus:bg-white"
             />
           </div>
 
           <div>
-            <label className="text-xs font-bold uppercase tracking-wider text-zinc-400 block mb-1.5">Email Address</label>
+            <label className="text-xs font-bold uppercase tracking-wider text-[#77624F] block mb-1.5">Email Address</label>
             <input
               type="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="e.g. logan@gmail.com"
-              className="w-full bg-[#08090D] border border-[#202434] rounded-xl px-4 py-3 text-sm text-zinc-200 focus:outline-none focus:border-amber-400"
+              className="w-full bg-[#F5EDE3]/40 border border-[#D8C7B5] rounded-xl px-4 py-3 text-sm text-[#1E1712] focus:outline-none focus:border-[#C69D71] focus:bg-white"
             />
           </div>
 
           <div>
-            <label className="text-xs font-bold uppercase tracking-wider text-zinc-400 block mb-1.5">WhatsApp Phone Number</label>
+            <label className="text-xs font-bold uppercase tracking-wider text-[#77624F] block mb-1.5">WhatsApp Phone Number</label>
             <input
               type="tel"
               required
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               placeholder="e.g. 9876543210"
-              className="w-full bg-[#08090D] border border-[#202434] rounded-xl px-4 py-3 text-sm text-zinc-200 focus:outline-none focus:border-amber-400"
+              className="w-full bg-[#F5EDE3]/40 border border-[#D8C7B5] rounded-xl px-4 py-3 text-sm text-[#1E1712] focus:outline-none focus:border-[#C69D71] focus:bg-white"
             />
           </div>
 
           <div>
-            <label className="text-xs font-bold uppercase tracking-wider text-zinc-400 block mb-1.5">Password</label>
+            <label className="text-xs font-bold uppercase tracking-wider text-[#77624F] block mb-1.5">Password</label>
             <input
               type="password"
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
-              className="w-full bg-[#08090D] border border-[#202434] rounded-xl px-4 py-3 text-sm text-zinc-200 focus:outline-none focus:border-amber-400"
+              className="w-full bg-[#F5EDE3]/40 border border-[#D8C7B5] rounded-xl px-4 py-3 text-sm text-[#1E1712] focus:outline-none focus:border-[#C69D71] focus:bg-white"
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="gold-gradient-btn w-full mt-2 py-3.5 rounded-xl uppercase tracking-wider text-xs cursor-pointer"
+            className="gold-gradient-btn w-full mt-2 py-3.5 rounded-xl uppercase tracking-wider text-xs cursor-pointer shadow-md"
           >
             {loading ? 'Creating Account...' : 'Sign Up'}
           </button>
         </form>
 
-        <p className="text-xs text-zinc-400 text-center">
+        <p className="text-xs text-[#77624F] text-center">
           Already have an account?{' '}
-          <Link to="/login" className="text-amber-400 font-bold hover:underline">
+          <Link to="/login" className="text-[#8A6237] font-bold hover:underline">
             Sign In
           </Link>
         </p>

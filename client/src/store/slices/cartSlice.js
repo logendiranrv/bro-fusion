@@ -1,53 +1,27 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import api from '../../utils/api';
+import { createSlice } from '@reduxjs/toolkit';
 
-export const fetchCart = createAsyncThunk('cart/fetch', async (_, thunkAPI) => {
-  try {
-    const response = await api.get('/cart');
-    return response.data;
-  } catch (error) {
-    return thunkAPI.rejectWithValue(error.response?.data?.message || 'Failed to fetch cart');
-  }
-});
+const CART_STORAGE_KEY = 'bro_fusion_cart';
 
-export const addToCart = createAsyncThunk('cart/add', async (itemData, thunkAPI) => {
+const loadCartFromStorage = () => {
   try {
-    const response = await api.post('/cart/add', itemData);
-    return response.data;
-  } catch (error) {
-    return thunkAPI.rejectWithValue(error.response?.data?.message || 'Failed to add item');
+    const data = localStorage.getItem(CART_STORAGE_KEY);
+    return data ? JSON.parse(data) : [];
+  } catch (err) {
+    console.error('Failed to load cart from storage:', err);
+    return [];
   }
-});
+};
 
-export const updateCartItem = createAsyncThunk('cart/update', async (itemData, thunkAPI) => {
+const saveCartToStorage = (items) => {
   try {
-    const response = await api.put('/cart/update', itemData);
-    return response.data;
-  } catch (error) {
-    return thunkAPI.rejectWithValue(error.response?.data?.message || 'Failed to update item');
+    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
+  } catch (err) {
+    console.error('Failed to save cart to storage:', err);
   }
-});
-
-export const removeFromCart = createAsyncThunk('cart/remove', async (itemId, thunkAPI) => {
-  try {
-    const response = await api.delete(`/cart/remove/${itemId}`);
-    return response.data;
-  } catch (error) {
-    return thunkAPI.rejectWithValue(error.response?.data?.message || 'Failed to remove item');
-  }
-});
-
-export const clearCart = createAsyncThunk('cart/clear', async (_, thunkAPI) => {
-  try {
-    const response = await api.delete('/cart/clear');
-    return response.data;
-  } catch (error) {
-    return thunkAPI.rejectWithValue(error.response?.data?.message || 'Failed to clear cart');
-  }
-});
+};
 
 const initialState = {
-  items: [],
+  items: loadCartFromStorage(),
   loading: false,
   error: null,
 };
@@ -55,33 +29,74 @@ const initialState = {
 const cartSlice = createSlice({
   name: 'cart',
   initialState,
-  reducers: {},
-  extraReducers: (builder) => {
-    builder
-      .addCase(fetchCart.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(fetchCart.fulfilled, (state, action) => {
-        state.loading = false;
-        state.items = action.payload.cart?.items || [];
-      })
-      .addCase(fetchCart.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
-      .addCase(addToCart.fulfilled, (state, action) => {
-        state.items = action.payload.cart?.items || [];
-      })
-      .addCase(updateCartItem.fulfilled, (state, action) => {
-        state.items = action.payload.cart?.items || [];
-      })
-      .addCase(removeFromCart.fulfilled, (state, action) => {
-        state.items = action.payload.cart?.items || [];
-      })
-      .addCase(clearCart.fulfilled, (state) => {
-        state.items = [];
-      });
+  reducers: {
+    fetchCart: (state) => {
+      state.items = loadCartFromStorage();
+    },
+    addItemToCart: (state, action) => {
+      const { product, quantity = 1, size = 'Standard', color = 'Default' } = action.payload;
+      const productId = product._id || product.id;
+      
+      const existingIndex = state.items.findIndex(
+        (item) =>
+          (item.product?._id === productId || item.product?.id === productId) &&
+          item.size === size &&
+          item.color === color
+      );
+
+      if (existingIndex > -1) {
+        state.items[existingIndex].quantity += Number(quantity);
+      } else {
+        const newItem = {
+          _id: `${productId}-${size}-${color}-${Date.now()}`,
+          product: {
+            _id: productId,
+            id: productId,
+            name: product.name,
+            slug: product.slug,
+            price: Number(product.price),
+            discountPrice: Number(product.discountPrice || 0),
+            images: product.images || [],
+          },
+          quantity: Number(quantity),
+          size,
+          color,
+        };
+        state.items.push(newItem);
+      }
+      saveCartToStorage(state.items);
+    },
+    updateCartItemQuantity: (state, action) => {
+      const { itemId, quantity } = action.payload;
+      const item = state.items.find((i) => i._id === itemId);
+      if (item) {
+        item.quantity = Math.max(1, Number(quantity));
+        saveCartToStorage(state.items);
+      }
+    },
+    removeItemFromCart: (state, action) => {
+      const itemId = action.payload;
+      state.items = state.items.filter((i) => i._id !== itemId);
+      saveCartToStorage(state.items);
+    },
+    clearCart: (state) => {
+      state.items = [];
+      saveCartToStorage([]);
+    },
   },
 });
+
+export const {
+  fetchCart,
+  addItemToCart,
+  updateCartItemQuantity,
+  removeItemFromCart,
+  clearCart,
+} = cartSlice.actions;
+
+// Backwards compatibility aliases
+export const addToCart = addItemToCart;
+export const updateCartItem = updateCartItemQuantity;
+export const removeFromCart = removeItemFromCart;
 
 export default cartSlice.reducer;

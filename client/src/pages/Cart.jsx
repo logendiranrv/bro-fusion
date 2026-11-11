@@ -1,56 +1,27 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { fetchCart, updateCartItem, removeFromCart } from '../store/slices/cartSlice';
 import { FaTrash, FaArrowRight } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 
 export default function Cart() {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const { user } = useSelector((state) => state.auth);
   const { items: cartItems, loading } = useSelector((state) => state.cart);
 
   useEffect(() => {
-    if (user) {
-      dispatch(fetchCart());
-    }
-  }, [user, dispatch]);
+    dispatch(fetchCart());
+  }, [dispatch]);
 
   const handleQuantityChange = (item, newQty) => {
     if (newQty < 1) return;
-    dispatch(
-      updateCartItem({
-        productId: item.product._id,
-        quantity: newQty,
-        size: item.size,
-        color: item.color,
-      })
-    ).then((res) => {
-      if (res.meta.requestStatus === 'fulfilled') {
-        toast.success('Cart updated');
-      }
-    });
+    dispatch(updateCartItem({ itemId: item._id, quantity: newQty }));
   };
 
   const handleRemove = (itemId) => {
-    dispatch(removeFromCart(itemId)).then((res) => {
-      if (res.meta.requestStatus === 'fulfilled') {
-        toast.success('Item removed from cart');
-      }
-    });
+    dispatch(removeFromCart(itemId));
+    toast.success('Item removed from cart');
   };
-
-  if (!user) {
-    return (
-      <div className="max-w-md mx-auto my-24 px-4 text-center">
-        <h2 className="text-2xl font-bold text-white mb-4">Please log in to view your cart</h2>
-        <Link to="/login" className="bg-amber-500 hover:bg-amber-600 text-black font-bold py-2.5 px-6 rounded-full inline-block">
-          Login
-        </Link>
-      </div>
-    );
-  }
 
   const subtotal = cartItems.reduce((acc, item) => {
     const price = item.product.discountPrice > 0 ? item.product.discountPrice : item.product.price;
@@ -59,58 +30,62 @@ export default function Cart() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <h1 className="text-3xl font-extrabold text-white mb-8">Shopping Cart</h1>
+      <h1 className="text-3xl sm:text-4xl font-extrabold text-[#2F1D15] mb-8 font-['Syne']">Shopping Cart</h1>
 
       {loading ? (
-        <div className="animate-pulse bg-zinc-900 border border-zinc-800 rounded-lg h-48 animate-duration-1000"></div>
+        <div className="animate-pulse bg-[#FDFBF7] border border-[#E5D9CB] rounded-2xl h-48"></div>
       ) : cartItems?.length === 0 ? (
-        <div className="text-center py-24 bg-zinc-900/30 border border-zinc-800 rounded-lg">
-          <p className="text-zinc-500 mb-6">Your shopping cart is empty.</p>
-          <Link to="/products" className="gold-gradient-btn py-3 px-8 rounded-full inline-block uppercase tracking-wider text-xs">
+        <div className="text-center py-24 bg-[#FDFBF7] border border-[#E5D9CB] rounded-2xl shadow-sm">
+          <p className="text-[#7A6451] mb-6 font-medium">Your shopping cart is empty.</p>
+          {/* Rule 7: Buttons: Gold with dark text */}
+          <Link to="/products" className="gold-gradient-btn py-3.5 px-8 rounded-full inline-block uppercase tracking-wider text-xs shadow-md">
             Shop Drops Now
           </Link>
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-          {/* Items List */}
-          <div className="lg:col-span-2 flex flex-col gap-6">
+          {/* Items List in Ivory / Cream cards */}
+          <div className="lg:col-span-2 flex flex-col gap-4">
             {cartItems.map((item) => {
               if (!item.product) return null;
               const price = item.product.discountPrice > 0 ? item.product.discountPrice : item.product.price;
               const itemImg = item.product.images?.[0]?.url || 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=500&auto=format&fit=crop&q=60';
               return (
-                <div key={item._id} className="bg-zinc-900 border border-zinc-800 rounded-lg p-4 flex gap-4 items-center">
-                  <img src={itemImg} alt={item.product.name} className="w-20 h-24 object-cover rounded-md bg-zinc-950 border border-zinc-800" />
+                /* Rule 3: Ivory / Cream card */
+                <div key={item._id} className="bg-[#FDFBF7] border border-[#E5D9CB] rounded-2xl p-4 flex gap-4 items-center shadow-sm">
+                  <img src={itemImg} alt={item.product.name} className="w-20 h-24 object-cover rounded-xl bg-[#F5EDE3] border border-[#E5D9CB]" />
                   <div className="flex-1 min-w-0">
-                    <Link to={`/product/${item.product.slug}`} className="font-semibold text-white hover:text-amber-400 transition-colors truncate block">
+                    {/* Rule 4: Product names: Dark Brown */}
+                    <Link to={`/product/${item.product.slug}`} className="font-bold text-[#2F1D15] hover:text-[#B88E28] transition-colors truncate block">
                       {item.product.name}
                     </Link>
-                    <span className="text-xs text-zinc-500 block mt-1">
-                      Size: <span className="text-zinc-300 font-semibold">{item.size || 'N/A'}</span> | Color:{' '}
-                      <span className="text-zinc-300 font-semibold">{item.color || 'N/A'}</span>
+                    <span className="text-xs text-[#7A6451] block mt-1">
+                      Size: <span className="text-[#2F1D15] font-semibold">{item.size || 'N/A'}</span> | Color:{' '}
+                      <span className="text-[#2F1D15] font-semibold">{item.color || 'N/A'}</span>
                     </span>
-                    <div className="flex items-center gap-3 mt-2">
+                    <div className="flex items-center gap-3 mt-3">
                       <button
                         onClick={() => handleQuantityChange(item, item.quantity - 1)}
-                        className="text-zinc-400 hover:text-white text-base font-bold px-1 cursor-pointer"
+                        className="w-7 h-7 rounded-lg bg-[#F5EDE3] border border-[#E5D9CB] text-[#2F1D15] hover:bg-[#EAE0D3] flex items-center justify-center font-bold text-sm cursor-pointer"
                       >
                         -
                       </button>
-                      <span className="text-sm font-semibold text-white">{item.quantity}</span>
+                      <span className="text-sm font-bold text-[#2F1D15]">{item.quantity}</span>
                       <button
                         onClick={() => handleQuantityChange(item, item.quantity + 1)}
-                        className="text-zinc-400 hover:text-white text-base font-bold px-1 cursor-pointer"
+                        className="w-7 h-7 rounded-lg bg-[#F5EDE3] border border-[#E5D9CB] text-[#2F1D15] hover:bg-[#EAE0D3] flex items-center justify-center font-bold text-sm cursor-pointer"
                       >
                         +
                       </button>
                     </div>
                   </div>
+                  {/* Rule 5: Prices: Dark Brown */}
                   <div className="text-right flex flex-col items-end">
-                    <span className="text-lg font-bold text-amber-400 block">₹{price * item.quantity}</span>
-                    <span className="text-xs text-zinc-500 block">₹{price} each</span>
+                    <span className="text-lg font-black text-[#2F1D15] block">₹{price * item.quantity}</span>
+                    <span className="text-xs text-[#8C7765] block">₹{price} each</span>
                     <button
                       onClick={() => handleRemove(item._id)}
-                      className="text-zinc-500 hover:text-red-500 transition-colors p-2 mt-2 cursor-pointer"
+                      className="text-[#7A6451] hover:text-red-500 transition-colors p-2 mt-2 cursor-pointer"
                       title="Remove Item"
                     >
                       <FaTrash />
@@ -121,25 +96,26 @@ export default function Cart() {
             })}
           </div>
 
-          {/* Checkout Summary */}
-          <div className="bg-[#10121A] border border-[#202434] rounded-2xl p-6 h-fit flex flex-col gap-6 shadow-xl">
-            <h2 className="text-xl font-bold text-white">Order Summary</h2>
-            <div className="flex justify-between items-center border-b border-[#202434] pb-4">
-              <span className="text-zinc-400">Subtotal</span>
-              <span className="text-lg font-bold text-white">₹{subtotal}</span>
+          {/* Checkout Summary in Ivory / Cream card */}
+          <div className="bg-[#FDFBF7] border border-[#E5D9CB] rounded-2xl p-6 h-fit flex flex-col gap-6 shadow-md">
+            <h2 className="text-xl font-bold text-[#2F1D15] font-['Syne']">Order Summary</h2>
+            <div className="flex justify-between items-center border-b border-[#E5D9CB] pb-4">
+              <span className="text-[#7A6451]">Subtotal</span>
+              <span className="text-lg font-bold text-[#2F1D15]">₹{subtotal}</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-zinc-400">Shipping</span>
-              <span className="text-sm text-emerald-400 font-bold">FREE DELIVERY</span>
+              <span className="text-[#7A6451]">Shipping</span>
+              <span className="text-sm text-emerald-700 font-bold">FREE DELIVERY</span>
             </div>
-            <div className="border-t border-[#202434] pt-4 flex justify-between items-center">
-              <span className="font-bold text-white">Total</span>
-              <span className="text-2xl font-black text-amber-400">₹{subtotal}</span>
+            <div className="border-t border-[#E5D9CB] pt-4 flex justify-between items-center">
+              <span className="font-bold text-[#2F1D15]">Total</span>
+              <span className="text-2xl font-black text-[#2F1D15]">₹{subtotal}</span>
             </div>
 
+            {/* Rule 7: Buttons: Gold with dark text */}
             <Link
               to="/checkout"
-              className="gold-gradient-btn w-full py-4 px-6 rounded-xl text-center uppercase tracking-wider text-sm flex items-center justify-center gap-2 cursor-pointer shadow-xl"
+              className="gold-gradient-btn w-full py-4 px-6 rounded-xl text-center uppercase tracking-wider text-sm flex items-center justify-center gap-2 cursor-pointer shadow-md"
             >
               Proceed to WhatsApp Checkout <FaArrowRight />
             </Link>
