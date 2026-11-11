@@ -49,28 +49,29 @@ export default function Products() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10 border-b border-[#202434] pb-6">
         <div>
-          <h1 className="text-3xl font-extrabold text-white">Shop All Drops</h1>
-          <p className="text-sm text-zinc-400 mt-1">Explore our complete catalog of streetwear staples.</p>
+          <span className="text-xs font-bold uppercase tracking-widest text-amber-400">Streetwear Lineup</span>
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-white mt-1 font-['Syne']">Shop All Drops</h1>
+          <p className="text-xs text-zinc-400 mt-1">Explore our complete catalog of heavyweight cotton tees, hoodies & utility cargos.</p>
         </div>
 
         {/* Filters */}
-        <div className="flex flex-wrap items-center gap-4">
+        <div className="flex flex-wrap items-center gap-3">
           {/* Search bar */}
           <input
             type="text"
             placeholder="Search items..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-2 text-sm text-zinc-200 focus:outline-none focus:border-zinc-700"
+            className="bg-[#10121A] border border-[#202434] focus:border-amber-400 rounded-xl px-4 py-2.5 text-xs text-zinc-200 focus:outline-none"
           />
 
           {/* Category Filter */}
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-2 text-sm text-zinc-200 focus:outline-none focus:border-zinc-700 cursor-pointer"
+            className="bg-[#10121A] border border-[#202434] focus:border-amber-400 rounded-xl px-4 py-2.5 text-xs text-zinc-200 focus:outline-none cursor-pointer"
           >
             <option value="">All Categories</option>
             {categories?.map((cat) => (
@@ -82,7 +83,7 @@ export default function Products() {
           <select
             value={sort}
             onChange={(e) => setSort(e.target.value)}
-            className="bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-2 text-sm text-zinc-200 focus:outline-none focus:border-zinc-700 cursor-pointer"
+            className="bg-[#10121A] border border-[#202434] focus:border-amber-400 rounded-xl px-4 py-2.5 text-xs text-zinc-200 focus:outline-none cursor-pointer"
           >
             <option value="">Sort: Default</option>
             <option value="price-asc">Price: Low to High</option>
@@ -95,7 +96,7 @@ export default function Products() {
       {loading ? (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
-            <div key={n} className="animate-pulse bg-zinc-900 aspect-[3/4] rounded-lg border border-zinc-800 animate-duration-1000"></div>
+            <div key={n} className="animate-pulse bg-[#10121A] aspect-[3/4] rounded-2xl border border-[#202434]"></div>
           ))}
         </div>
       ) : products?.length === 0 ? (

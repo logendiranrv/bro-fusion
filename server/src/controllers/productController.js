@@ -1,5 +1,4 @@
 const Product = require('../models/Product');
-const cloudinary = require('../config/cloudinary');
 
 // @desc    Get all products with filters
 // @route   GET /api/products
@@ -137,10 +136,6 @@ exports.deleteProduct = async (req, res, next) => {
   try {
     const product = await Product.findById(req.params.id);
     if (!product) return res.status(404).json({ success: false, message: 'Product not found' });
-    // Delete images from Cloudinary
-    for (const img of product.images) {
-      if (img.publicId) await cloudinary.uploader.destroy(img.publicId);
-    }
     await product.deleteOne();
     res.status(200).json({ success: true, message: 'Product deleted' });
   } catch (err) {

@@ -15,34 +15,35 @@ export default function TrackOrder() {
 
   return (
     <div className="min-h-[70vh] flex items-center justify-center px-4 py-12">
-      <div className="max-w-md w-full bg-zinc-900 border border-zinc-800 rounded-2xl p-8 shadow-2xl flex flex-col gap-6">
+      <div className="max-w-md w-full bg-[#10121A] border border-[#202434] rounded-2xl p-8 shadow-2xl flex flex-col gap-6">
         <div className="text-center flex flex-col items-center">
-          <div className="w-16 h-16 bg-zinc-950 rounded-full flex items-center justify-center border border-zinc-800 mb-4">
-            <FaSearchLocation className="text-3xl text-amber-500" />
+          <div className="w-16 h-16 bg-[#08090D] rounded-full flex items-center justify-center border border-[#202434] mb-4">
+            <FaSearchLocation className="text-3xl text-amber-400" />
           </div>
-          <h2 className="text-3xl font-extrabold text-white">Track Your Order</h2>
-          <p className="text-sm text-zinc-400 mt-2">Enter your Order ID to check the current status and shipment details.</p>
+          <span className="text-xs font-bold uppercase tracking-widest text-amber-400">Shipment Status</span>
+          <h2 className="text-3xl font-extrabold text-white mt-1 font-['Syne']">Track Your Order</h2>
+          <p className="text-xs text-zinc-400 mt-2">Enter your Order ID (e.g. #BF-123456) to check the current delivery progress.</p>
         </div>
 
         <form onSubmit={handleTrack} className="flex flex-col gap-4">
           <div>
-            <label className="text-xs text-zinc-400 block mb-1">Order ID</label>
+            <label className="text-xs font-bold uppercase tracking-wider text-zinc-400 block mb-1.5">Order ID</label>
             <input
               type="text"
               required
               value={orderId}
               onChange={(e) => setOrderId(e.target.value)}
-              placeholder="e.g. 6a3951da41498352..."
-              className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-3 text-zinc-200 focus:outline-none focus:border-zinc-700"
+              placeholder="e.g. BF-839201 or order number"
+              className="w-full bg-[#08090D] border border-[#202434] rounded-xl px-4 py-3 text-sm text-zinc-200 focus:outline-none focus:border-amber-400"
             />
           </div>
 
           <button
             type="submit"
             disabled={!orderId.trim()}
-            className="w-full mt-2 bg-gradient-to-r from-amber-500 to-purple-600 hover:from-amber-600 hover:to-purple-700 disabled:opacity-50 text-white font-bold py-3.5 rounded-lg shadow-lg cursor-pointer transition-all"
+            className="gold-gradient-btn w-full mt-2 py-3.5 rounded-xl uppercase tracking-wider text-xs cursor-pointer shadow-xl disabled:opacity-50"
           >
-            Track Order
+            Track Shipment
           </button>
         </form>
       </div>

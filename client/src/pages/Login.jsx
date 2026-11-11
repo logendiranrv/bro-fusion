@@ -37,49 +37,50 @@ export default function Login() {
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
-      <div className="max-w-md w-full bg-zinc-900 border border-zinc-800 rounded-2xl p-8 shadow-2xl flex flex-col gap-6">
+      <div className="max-w-md w-full bg-[#10121A] border border-[#202434] rounded-2xl p-8 shadow-2xl flex flex-col gap-6">
         <div className="text-center">
-          <h2 className="text-3xl font-extrabold text-white">Welcome Back</h2>
-          <p className="text-sm text-zinc-400 mt-2">Log in to your Bro Fusion account</p>
+          <span className="text-xs font-bold uppercase tracking-widest text-amber-400">Account Access</span>
+          <h2 className="text-3xl font-extrabold text-white mt-1 font-['Syne']">Welcome Back</h2>
+          <p className="text-xs text-zinc-400 mt-2">Log in to view your orders and saved wishlist</p>
         </div>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div>
-            <label className="text-xs text-zinc-400 block mb-1">Email Address</label>
+            <label className="text-xs font-bold uppercase tracking-wider text-zinc-400 block mb-1.5">Email Address</label>
             <input
               type="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="Email"
-              className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2.5 text-zinc-200 focus:outline-none focus:border-zinc-700"
+              placeholder="e.g. logan@gmail.com"
+              className="w-full bg-[#08090D] border border-[#202434] rounded-xl px-4 py-3 text-sm text-zinc-200 focus:outline-none focus:border-amber-400"
             />
           </div>
 
           <div>
-            <label className="text-xs text-zinc-400 block mb-1">Password</label>
+            <label className="text-xs font-bold uppercase tracking-wider text-zinc-400 block mb-1.5">Password</label>
             <input
               type="password"
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
-              className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2.5 text-zinc-200 focus:outline-none focus:border-zinc-700"
+              className="w-full bg-[#08090D] border border-[#202434] rounded-xl px-4 py-3 text-sm text-zinc-200 focus:outline-none focus:border-amber-400"
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full mt-2 bg-gradient-to-r from-amber-500 to-purple-600 hover:from-amber-600 hover:to-purple-700 disabled:opacity-50 text-white font-bold py-3 rounded-lg shadow-lg cursor-pointer transition-all"
+            className="gold-gradient-btn w-full mt-2 py-3.5 rounded-xl uppercase tracking-wider text-xs cursor-pointer"
           >
-            {loading ? 'Logging in...' : 'Sign In'}
+            {loading ? 'Signing In...' : 'Sign In'}
           </button>
         </form>
 
-        <p className="text-sm text-zinc-500 text-center">
+        <p className="text-xs text-zinc-400 text-center">
           Don't have an account?{' '}
-          <Link to="/register" className="text-amber-400 hover:underline">
+          <Link to="/register" className="text-amber-400 font-bold hover:underline">
             Sign Up
           </Link>
         </p>

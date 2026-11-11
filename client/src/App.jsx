@@ -7,6 +7,7 @@ import { Toaster } from 'react-hot-toast';
 
 import Header from './components/Header';
 import Footer from './components/Footer';
+import WhatsAppButton from './components/WhatsAppButton';
 
 // Pages
 import Home from './pages/Home';
@@ -62,6 +63,7 @@ export default function App() {
           <Route path="/track-order" element={<TrackOrder />} />
         </Routes>
       </main>
+      <WhatsAppButton />
       <Footer />
       <Toaster
         position="bottom-right"

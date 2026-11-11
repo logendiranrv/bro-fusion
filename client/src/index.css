@@ -1,84 +1,79 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary-bg: #ECE0D1;
-  --color-card-bg: #ffffff;
-  --color-accent-gold: #b45309;
-  --color-accent-purple: #7c3aed;
-  --color-text-muted: #4a4a4f;
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-display: 'Syne', system-ui, sans-serif;
 
-  /* Flip zinc scale to map dark-mode layouts to sandal/light-mode */
-  --color-zinc-50: #000000;
-  --color-zinc-100: #000000; /* pure black text */
-  --color-zinc-200: #000000;
-  --color-zinc-300: #000000;
-  --color-zinc-400: #1b1b1f;
-  --color-zinc-500: #2b2b2f;
-  --color-zinc-600: #4a4a4f;
-  --color-zinc-700: #7b7875;
-  --color-zinc-800: #d5c8b9; /* soft sandal border matching #ECE0D1 */
-  --color-zinc-900: #ffffff; /* crisp white cards */
-  --color-zinc-950: #ECE0D1; /* page background */
+  /* Premium Obsidian & Luxe Onyx Scale */
+  --color-zinc-950: #08090D; /* Deepest Luxury Obsidian */
+  --color-zinc-900: #10121A; /* Matte Luxe Onyx card background */
+  --color-zinc-850: #161924; /* Elevated container */
+  --color-zinc-800: #202434; /* Elegant micro borders */
+  --color-zinc-700: #31374A;
+  --color-zinc-600: #4B536B;
+  --color-zinc-500: #64748B; /* Muted details */
+  --color-zinc-400: #94A3B8; /* Smooth secondary body */
+  --color-zinc-300: #CBD5E1; /* Primary body text */
+  --color-zinc-200: #E2E8F0;
+  --color-zinc-100: #F1F5F9;
+  --color-zinc-50: #F8FAFC;
 
-  /* Override white and black values so that text-white is dark premium black */
-  --color-white: #000000;
-  --color-black: #ffffff;
+  /* True crisp whites & deep blacks */
+  --color-white: #FFFFFF;
+  --color-black: #000000;
+
+  /* Liquid Champagne Gold Accent */
+  --color-amber-300: #F6E5A8;
+  --color-amber-400: #E5C378;
+  --color-amber-500: #D4AF37; /* Iconic Champagne Gold */
+  --color-amber-600: #B38728;
+  --color-amber-700: #8C6415;
+
+  /* Royal Violet / Amethyst Accent */
+  --color-purple-500: #A855F7;
+  --color-purple-600: #8B5CF6;
+  --color-purple-700: #7C3AED;
+
+  /* WhatsApp Luxury Emerald */
+  --color-emerald-400: #34D399;
+  --color-emerald-500: #10B981;
+  --color-emerald-600: #059669;
 }
 
 :root {
-  font-family: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
-  background-color: #ECE0D1;
-  color: #000000;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: #08090D;
+  color: #F8FAFC;
+  color-scheme: dark;
 }
 
 body {
   margin: 0;
   padding: 0;
   min-height: 100vh;
-  background-color: #ECE0D1;
-  color: #000000;
+  background-color: #08090D;
+  color: #F8FAFC;
   overflow-x: hidden;
+  letter-spacing: -0.01em;
 }
 
-/* Force true white text on solid colored/gradient elements */
-.bg-gradient-to-r:not(.bg-clip-text),
-.bg-purple-600,
-.bg-rose-600,
-.bg-emerald-600,
-.bg-amber-500,
-.bg-amber-600,
-.bg-red-500,
-.bg-red-600 {
-  color: #ffffff !important;
-}
-
-.bg-gradient-to-r:not(.bg-clip-text) *,
-.bg-purple-600 *,
-.bg-rose-600 *,
-.bg-emerald-600 *,
-.bg-amber-500 *,
-.bg-amber-600 *,
-.bg-red-500 *,
-.bg-red-600 * {
-  color: inherit !important;
-}
-
-/* Custom Scrollbar */
+/* Luxury Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 7px;
 }
 ::-webkit-scrollbar-track {
-  background: #fcf8ee;
+  background: #08090D;
 }
 ::-webkit-scrollbar-thumb {
-  background: #e5dfd3;
-  border-radius: 4px;
+  background: #202434;
+  border-radius: 9999px;
+  border: 1px solid rgba(212, 175, 55, 0.15);
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #d6cfc1;
+  background: #D4AF37;
 }
 
-/* Marquee Animation */
+/* Marquee Banner Animation */
 @keyframes marquee {
   0% {
     transform: translateX(0%);
@@ -98,30 +93,27 @@ body {
   animation-play-state: paused;
 }
 
-/* Gradient Flow Animation */
-@keyframes gradient-flow {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+/* Luxury Glow Gradients */
+.gold-glow {
+  box-shadow: 0 0 40px -10px rgba(212, 175, 55, 0.25);
 }
 
-.animate-gradient-flow {
-  background-size: 200% auto;
-  animation: gradient-flow 3s ease infinite;
+.gold-gradient-text {
+  background: linear-gradient(135deg, #FFF6D6 0%, #D4AF37 50%, #AA771C 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-/* Typing animation */
-@keyframes typing {
-  from { width: 0; }
-  to { width: 100%; }
+.gold-gradient-btn {
+  background: linear-gradient(135deg, #E5C378 0%, #D4AF37 50%, #B38728 100%);
+  color: #000000;
+  font-weight: 800;
+  box-shadow: 0 8px 25px -6px rgba(212, 175, 55, 0.4);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
-@keyframes blink-caret {
-  0%, 100% { border-color: transparent; }
-  50% { border-color: #fff; }
-}
-.typing {
-  overflow: hidden;
-  white-space: nowrap;
-  border-right: 0.15em solid #fff;
-  animation: typing 4s steps(30, end) forwards, blink-caret 0.75s step-end infinite;
+
+.gold-gradient-btn:hover {
+  background: linear-gradient(135deg, #F3E5AB 0%, #E5C378 50%, #D4AF37 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px -4px rgba(212, 175, 55, 0.55);
 }

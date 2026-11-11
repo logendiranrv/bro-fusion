@@ -66,8 +66,8 @@ export default function Cart() {
       ) : cartItems?.length === 0 ? (
         <div className="text-center py-24 bg-zinc-900/30 border border-zinc-800 rounded-lg">
           <p className="text-zinc-500 mb-6">Your shopping cart is empty.</p>
-          <Link to="/products" className="bg-gradient-to-r from-amber-500 to-purple-600 hover:from-amber-600 hover:to-purple-700 text-white font-semibold py-2.5 px-6 rounded-full inline-block">
-            Shop Now
+          <Link to="/products" className="gold-gradient-btn py-3 px-8 rounded-full inline-block uppercase tracking-wider text-xs">
+            Shop Drops Now
           </Link>
         </div>
       ) : (
@@ -122,26 +122,26 @@ export default function Cart() {
           </div>
 
           {/* Checkout Summary */}
-          <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-6 h-fit flex flex-col gap-6">
+          <div className="bg-[#10121A] border border-[#202434] rounded-2xl p-6 h-fit flex flex-col gap-6 shadow-xl">
             <h2 className="text-xl font-bold text-white">Order Summary</h2>
-            <div className="flex justify-between items-center border-b border-zinc-800 pb-4">
+            <div className="flex justify-between items-center border-b border-[#202434] pb-4">
               <span className="text-zinc-400">Subtotal</span>
               <span className="text-lg font-bold text-white">₹{subtotal}</span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-zinc-400">Shipping</span>
-              <span className="text-sm text-emerald-500 font-semibold">FREE</span>
+              <span className="text-sm text-emerald-400 font-bold">FREE DELIVERY</span>
             </div>
-            <div className="border-t border-zinc-800 pt-4 flex justify-between items-center">
+            <div className="border-t border-[#202434] pt-4 flex justify-between items-center">
               <span className="font-bold text-white">Total</span>
-              <span className="text-xl font-black text-amber-400">₹{subtotal}</span>
+              <span className="text-2xl font-black text-amber-400">₹{subtotal}</span>
             </div>
 
             <Link
               to="/checkout"
-              className="bg-gradient-to-r from-amber-500 to-purple-600 hover:from-amber-600 hover:to-purple-700 text-white font-bold py-3 px-6 rounded-lg text-center transition-all flex items-center justify-center gap-2 shadow-lg"
+              className="gold-gradient-btn w-full py-4 px-6 rounded-xl text-center uppercase tracking-wider text-sm flex items-center justify-center gap-2 cursor-pointer shadow-xl"
             >
-              Proceed to Checkout <FaArrowRight />
+              Proceed to WhatsApp Checkout <FaArrowRight />
             </Link>
           </div>
         </div>

@@ -4,9 +4,10 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { fetchProductBySlug, clearCurrentProduct } from '../store/slices/productSlice';
 import { addToCart } from '../store/slices/cartSlice';
 import { toggleWishlist } from '../store/slices/wishlistSlice';
-import { FaHeart, FaRegHeart, FaStar, FaShoppingCart } from 'react-icons/fa';
+import { FaHeart, FaRegHeart, FaStar, FaShoppingCart, FaWhatsapp } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 import api from '../utils/api';
+import { generateProductWhatsAppUrl } from '../utils/whatsapp';
 
 export default function ProductDetail() {
   const { slug } = useParams();
@@ -14,6 +15,7 @@ export default function ProductDetail() {
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
   const { currentProduct: product, loading } = useSelector((state) => state.products);
+  const { settings } = useSelector((state) => state.settings || { settings: {} });
   const wishlistItems = useSelector((state) => state.wishlist.items);
 
   const [selectedImage, setSelectedImage] = useState(0);
@@ -103,6 +105,22 @@ export default function ProductDetail() {
         toast.error(res.payload || 'Failed to process checkout');
       }
     });
+  };
+
+  const handleWhatsAppOrder = () => {
+    if (product.sizes?.length > 0 && !selectedSize) {
+      toast.error('Please select a size first');
+      return;
+    }
+    const whatsappUrl = generateProductWhatsAppUrl({
+      product,
+      size: selectedSize || product.sizes?.[0] || 'Standard',
+      color: selectedColor || product.colors?.[0] || 'Default',
+      quantity,
+      whatsappNumber: settings?.whatsappNumber || import.meta.env.VITE_WHATSAPP_NUMBER || '919876543210',
+      currentUrl: window.location.href,
+    });
+    window.open(whatsappUrl, '_blank');
   };
 
   const handleWishlist = () => {
@@ -283,14 +301,14 @@ export default function ProductDetail() {
 
               <button
                 onClick={handleAddToCart}
-                className="flex-1 bg-gradient-to-r from-amber-500 to-purple-600 hover:from-amber-600 hover:to-purple-700 text-white font-bold py-3 px-6 rounded-lg transition-all flex items-center justify-center gap-2 shadow-lg cursor-pointer"
+                className="flex-1 bg-[#161924] hover:bg-[#202434] text-white border border-[#202434] hover:border-amber-400/50 font-bold py-3.5 px-6 rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg cursor-pointer"
               >
-                <FaShoppingCart /> Add to Cart
+                <FaShoppingCart className="text-amber-400" /> Add to Cart
               </button>
 
               <button
                 onClick={handleWishlist}
-                className="p-3 rounded-lg border border-zinc-800 bg-zinc-900 hover:border-zinc-700 hover:bg-zinc-850 text-zinc-300 hover:text-rose-500 cursor-pointer"
+                className="p-3.5 rounded-xl border border-[#202434] bg-[#10121A] hover:border-zinc-700 hover:bg-[#161924] text-zinc-300 hover:text-rose-500 cursor-pointer"
               >
                 {isWishlisted ? <FaHeart className="text-rose-500" /> : <FaRegHeart />}
               </button>
@@ -298,9 +316,16 @@ export default function ProductDetail() {
 
             <button
               onClick={handleBuyNow}
-              className="w-full bg-amber-500 hover:bg-amber-600 text-black font-bold py-3.5 px-6 rounded-lg transition-all flex items-center justify-center gap-2 shadow-lg cursor-pointer border-0 select-none text-base"
+              className="gold-gradient-btn w-full py-4 px-6 rounded-xl flex items-center justify-center gap-2 shadow-xl cursor-pointer border-0 select-none text-sm uppercase tracking-wider"
             >
-              ⚡ Buy Now
+              ⚡ Instant Checkout
+            </button>
+
+            <button
+              onClick={handleWhatsAppOrder}
+              className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold py-4 px-6 rounded-xl transition-all flex items-center justify-center gap-2 shadow-xl cursor-pointer border-0 select-none text-sm uppercase tracking-wider"
+            >
+              <FaWhatsapp className="text-xl" /> Order Directly on WhatsApp
             </button>
           </div>
         </div>
